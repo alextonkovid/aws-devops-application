@@ -41,7 +41,7 @@ spec:
                       def namespace = "wordpress"
 
                 sh(script: """
-                helm upgrade --install ${releaseName} ${chartPath} --namespace ${namespace}
+                helm upgrade --install ${releaseName} ${chartPath} --namespace ${namespace} --create-namespace
                 """)
                   }
               }

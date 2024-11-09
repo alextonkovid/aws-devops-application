@@ -41,6 +41,7 @@ spec:
                       def namespace = "wordpress" // Namespace to deploy
 
                       sh """
+                      helm list -A
                       helm upgrade --install ${releaseName} ${chartPath} --namespace ${namespace}
                       """
                   }

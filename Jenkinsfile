@@ -42,7 +42,7 @@ spec:
 
                       sh """
                       helm list -A
-                      helm upgrade --install ${releaseName} ${chartPath} --namespace ${namespace}
+                      helm install ${releaseName} ${chartPath} --namespace ${namespace}
                       """
                   }
               }

@@ -40,11 +40,9 @@ spec:
                       def chartPath = "./wordpress" 
                       def namespace = "wordpress"
 
-                      sh """
-                      helm list -A
-                      helm install ${releaseName} ${chartPath} -n \${namespace}
-                      echo Username: user Password: $(kubectl get secret --namespace jenkins wordpress -o jsonpath="{.data.wordpress-password}" | base64 -d)
-                      """
+                sh(script: """
+                helm upgrade --install ${releaseName} ${chartPath} --namespace ${namespace}
+                """)
                   }
               }
           }

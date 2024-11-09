@@ -24,9 +24,6 @@ spec:
         }
     }
 
-    environment {
-        KUBECONFIG = credentials('kubeconfig-credential-id') // Jenkins credential with kubeconfig
-    }
 
     stages {
         stage('Checkout') {
@@ -35,20 +32,20 @@ spec:
             }
         }
 
-        stage('Helm Install/Upgrade') {
-            steps {
-                container('helm') {
-                    script {
-                        def releaseName = "my-release"
-                        def chartPath = "./wordpress" // or chart repo URL
-                        def namespace = "default" // Namespace to deploy
+      stage('Helm Install/Upgrade') {
+          steps {
+              container('helm') {
+                  script {
+                      def releaseName = "wordpress"
+                      def chartPath = "./wordpress" // or chart repo URL
+                      def namespace = "wordpress" // Namespace to deploy
 
-                        sh """
-                        helm upgrade --install ${releaseName} ${chartPath} --namespace ${namespace} --kubeconfig $KUBECONFIG
-                        """
-                    }
-                }
-            }
-        }
+                      sh """
+                      helm upgrade --install ${releaseName} ${chartPath} --namespace ${namespace}
+                      """
+                  }
+              }
+          }
+      }
     }
 }

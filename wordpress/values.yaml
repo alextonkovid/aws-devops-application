@@ -120,7 +120,7 @@ wordpressPassword: ""
 existingSecret: ""
 ## @param wordpressEmail WordPress user email
 ##
-wordpressEmail: user@example.com
+wordpressEmail: user@mail.com
 ## @param wordpressFirstName WordPress user first name
 ##
 wordpressFirstName: FirstName

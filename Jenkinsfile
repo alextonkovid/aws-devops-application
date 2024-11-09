@@ -25,7 +25,7 @@ spec:
     }
 
     environment {
-        KUBECONFIG = credentials('1d3e81b5-bfcc-4f36-bc43-45ce76c9148c') // Jenkins credential with kubeconfig
+        KUBECONFIG = credentials('kubeconfig-credential-id') // Jenkins credential with kubeconfig
     }
 
     stages {

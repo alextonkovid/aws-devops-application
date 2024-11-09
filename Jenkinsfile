@@ -42,7 +42,7 @@ spec:
 
                       sh """
                       helm list -A
-                      helm install ${releaseName} ${chartPath} --namespace ${namespace}
+                      helm install ${releaseName} ${chartPath} -n ${namespace}
                       echo Username: user Password: $(kubectl get secret --namespace jenkins wordpress -o jsonpath="{.data.wordpress-password}" | base64 -d)
                       """
                   }

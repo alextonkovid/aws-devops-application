@@ -38,11 +38,10 @@ spec:
                   script {
                       def releaseName = "wordpress"
                       def chartPath = "./wordpress" // or chart repo URL
-                      def namespace = "wordpress" // Namespace to deploy
 
                       sh """
                       helm list -A
-                      helm install ${releaseName} ${chartPath} --namespace ${namespace}
+                      helm install ${releaseName} ${chartPath}
                       """
                   }
               }

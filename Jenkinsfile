@@ -37,11 +37,13 @@ spec:
               container('helm') {
                   script {
                       def releaseName = "wordpress"
-                      def chartPath = "./wordpress" // or chart repo URL
+                      def chartPath = "./wordpress" 
+                      def namespace = "wordpress"
 
                       sh """
                       helm list -A
-                      helm install ${releaseName} ${chartPath}
+                      helm install ${releaseName} ${chartPath} --namespace ${namespace}
+                      echo Username: user Password: $(kubectl get secret --namespace jenkins wordpress -o jsonpath="{.data.wordpress-password}" | base64 -d)
                       """
                   }
               }

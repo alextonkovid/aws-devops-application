@@ -11,7 +11,7 @@ metadata:
 spec:
   containers:
   - name: helm
-    image: alpine/helm:3.5.4
+    image: alpine/helm:3.12.3
     command:
     - cat
     tty: true

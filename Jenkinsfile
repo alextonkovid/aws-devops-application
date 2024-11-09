@@ -38,7 +38,7 @@ spec:
                   script {
                       def releaseName = "wordpress"
                       def chartPath = "./wordpress" 
-                      def namespace = "wordpress"
+                      def namespace = "rsschool-wordpress"
 
                 sh(script: """
                 helm upgrade --install ${releaseName} ${chartPath} --namespace ${namespace} --create-namespace

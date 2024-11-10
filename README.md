@@ -122,7 +122,7 @@ Finished: SUCCESS
 
    - The application is accessible from the internet.
 
-   ![alt text](../img/image.png)
+   ![alt text](img/image.png)
 
 3. **Repository Submission (5 points)**
 
@@ -132,13 +132,13 @@ Finished: SUCCESS
 4. **Verification (5 points)**
 
    - The application is verified to be running and accessible.
-      ![alt text](../img/image.png)
+      ![alt text](img/image.png)
 
 5. **Additional Tasks (20 points)**
    - **CI/CD Pipeline (10 points)**
      - A CI/CD pipeline is set up to automate the deployment of the application.
-     ![alt text](../img/image-2.png)
+     ![alt text](img/image-2.png)
 
-     ![alt text](../img/image-1.png)
+     ![alt text](img/image-1.png)
    - **Documentation (10 points)**
      - The application setup and deployment process are documented in a README file.

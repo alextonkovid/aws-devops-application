@@ -63,18 +63,28 @@ spec:
 															}
 											}
 								}
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    def scannerHome = tool 'SonarScanner';
-                    withSonarQubeEnv() { 
-                        sh "${scannerHome}/bin/sonar-scanner"
-                    }
-                }
-            }
-        }
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         script {
+        //             def scannerHome = tool 'SonarScanner';
+        //             withSonarQubeEnv() { 
+        //                 sh "${scannerHome}/bin/sonar-scanner"
+        //             }
+        //         }
+        //     }
+        // }
     
-
+        // run sonarqube test
+        stage('Run Sonarqube') {
+            environment {
+                scannerHome = tool 'SonarQube';
+            }
+            steps {
+              withSonarQubeEnv(credentialsId: 'SonarQube', installationName: 'sonar local') {
+                sh "${scannerHome}/bin/sonar-scanner"
+              }
+            }
+								}
 
         // stage('Docker Build and Push to ECR') {
         //     steps {

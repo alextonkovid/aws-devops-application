@@ -57,7 +57,9 @@ spec:
         stage('Run PHPUnit Tests') {
 											steps {
 															container('php') {
-																			sh 'phpunit --configuration phpunit.xml'
+																			sh """
+																			phpunit --bootstrap plugin/wp-test-plugin/autoload.php plugin/tests
+																			"""
 															}
 											}
 								}

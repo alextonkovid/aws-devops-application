@@ -58,7 +58,7 @@ spec:
 											steps {
 															container('php') {
 																			sh """
-																			phpunit --bootstrap plugin/wp-test-plugin/autoload.php --testbox plugin/tests
+																			phpunit --bootstrap plugin/wp-test-plugin/autoload.php --testdox plugin/tests
 																			"""
 															}
 											}

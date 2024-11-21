@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: {{ .Values.mariadb.image }}
+          env:
+            - name: ALLOW_EMPTY_PASSWORD 
+              value: "yes"
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: {{ .Values.mariadb.rootPasswordSecretKey }}
+            - name: MARIADB_DATABASE
+              value: {{ .Values.mariadb.database }}
+            - name: MARIADB_USER
+              value: {{ .Values.mariadb.user }}
+            - name: MARIADB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: {{ .Values.mariadb.userPasswordSecretKey }}
+          volumeMounts:
+            - name: mariadb-storage
+              mountPath: /bitnami/mariadb
+      volumes:
+        - name: mariadb-storage
+          persistentVolumeClaim:
+            claimName: mariadb-pvc

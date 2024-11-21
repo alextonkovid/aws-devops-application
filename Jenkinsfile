@@ -58,20 +58,16 @@ spec:
 											steps {
 															container('php') {
 																			sh """
-																			phpunit --bootstrap plugin/wp-test-plugin/autoload.php plugin/tests
+																			phpunit --bootstrap plugin/wp-test-plugin/autoload.php --testbox plugin/tests
 																			"""
 															}
 											}
 								}
-								stage('Security Check with SonarQube') {
-												steps {
-																script {
-																				def scannerHome = tool 'SonarQubeScanner'
-																				withSonarQubeEnv('SonarQube') {
-																								sh "${scannerHome}/bin/sonar-scanner"
-																				}
-																}
-												}
+								stage('SonarQube Analysis') {
+										def scannerHome = tool 'SonarScanner';
+										withSonarQubeEnv() {
+												sh "${scannerHome}/bin/sonar-scanner"
+										}
 								}
 
 

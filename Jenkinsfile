@@ -61,17 +61,17 @@ spec:
 															}
 											}
 								}
-        stage('Security Check with SonarQube') {
-            steps {
-                script {
-                        def scannerHome = tool 'SonarQubeScanner' 
-                        withSonarQubeEnv('SonarQube') {
-                            sh "${scannerHome)/bin/sonar-scanner}"
-                        
-                    }
-                }
-            }
-        }
+								stage('Security Check with SonarQube') {
+												steps {
+																script {
+																				def scannerHome = tool 'SonarQubeScanner'
+																				withSonarQubeEnv('SonarQube') {
+																								sh "${scannerHome}/bin/sonar-scanner"
+																				}
+																}
+												}
+								}
+
 
         // stage('Docker Build and Push to ECR') {
         //     steps {

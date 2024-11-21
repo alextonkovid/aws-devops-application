@@ -57,7 +57,7 @@ spec:
         stage('Run PHPUnit Tests') {
 											steps {
 															container('php') {
-																			sh './vendor/bin/phpunit --configuration phpunit.xml'
+																			sh 'phpunit --configuration phpunit.xml'
 															}
 											}
 								}

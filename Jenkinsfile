@@ -54,41 +54,34 @@ spec:
             }
         }
 
-        // stage('Run PHPUnit Tests') {
-								// 			steps {
-								// 							container('php') {
-								// 											sh """
-								// 											phpunit --bootstrap plugin/wp-test-plugin/autoload.php --testdox plugin/tests
-								// 											"""
-								// 							}
-								// 			}
-								// }
-        // stage('Run Sonarqube') {
-        //     environment {
-        //         scannerHome = tool 'SonarQube';
-        //     }
-        //     steps {
-        //       withSonarQubeEnv(credentialsId: 'SonarQube', installationName: 'SonarQube') {
-        //         sh """
-								// 								${scannerHome}/bin/sonar-scanner \
-								// 								-Dsonar.sources=$WORKSPACE/plugin 
-								// 								"""
-        //       }
-        //     }
-								// }
+        stage('Run PHPUnit Tests') {
+											steps {
+															container('php') {
+																			sh """
+																			phpunit --bootstrap plugin/wp-test-plugin/autoload.php --testdox plugin/tests
+																			"""
+															}
+											}
+								}
+        stage('Run Sonarqube') {
+            environment {
+                scannerHome = tool 'SonarQube';
+            }
+            steps {
+              withSonarQubeEnv(credentialsId: 'SonarQube', installationName: 'SonarQube') {
+                sh """
+																${scannerHome}/bin/sonar-scanner \
+																-Dsonar.sources=$WORKSPACE/plugin 
+																"""
+              }
+            }
+								}
 
-	       // stage('Build') { 
-        //     steps { 
-        //         script{
-        //          app = docker.build("rss-wordpress")
-        //         }
-        //     }
-        // }
         stage('Build & Deploy') {
             steps {
 													container('docker') {
                 script{
-																				app = docker.build("rss-wordpress")
+																				app = docker.build("docker-repo")
                         docker.withRegistry('https://390844773286.dkr.ecr.eu-west-3.amazonaws.com', 'ecr:eu-west-3:aws') {
                     app.push("${env.BUILD_NUMBER}")
                     app.push("latest")
@@ -98,12 +91,7 @@ spec:
             }
         }
         stage('Helm Install/Upgrade') {
-            // when {
-            //     expression {
-            //         // Ensure that Docker push completed before proceeding
-            //         return true // Add actual condition if necessary
-            //     }
-            // }
+
             steps {
                 container('helm') {
                     script {

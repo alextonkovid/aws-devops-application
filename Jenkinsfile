@@ -55,43 +55,44 @@ spec:
         }
 
         stage('Run PHPUnit Tests') {
-											steps {
-															container('php') {
-																			sh """
-																			phpunit --bootstrap plugin/wp-test-plugin/autoload.php --testdox plugin/tests
-																			"""
-															}
-											}
-								}
-        stage('Run Sonarqube') {
+            steps {
+                container('php') {
+                    sh """
+                    phpunit --bootstrap plugin/wp-test-plugin/autoload.php --testdox plugin/tests
+                    """
+                }
+            }
+        }
+
+        stage('Security check with SonarQube') {
             environment {
                 scannerHome = tool 'SonarQube';
             }
             steps {
-              withSonarQubeEnv(credentialsId: 'SonarQube', installationName: 'SonarQube') {
-                sh """
-																${scannerHome}/bin/sonar-scanner \
-																-Dsonar.sources=$WORKSPACE/plugin 
-																"""
-              }
-            }
-								}
-
-        stage('Build & Deploy') {
-            steps {
-													container('docker') {
-                script{
-																				app = docker.build("docker-repo")
-                        docker.withRegistry('https://390844773286.dkr.ecr.eu-west-3.amazonaws.com', 'ecr:eu-west-3:aws') {
-                    app.push("${env.BUILD_NUMBER}")
-                    app.push("latest")
-                    }
+                withSonarQubeEnv(credentialsId: 'SonarQube', installationName: 'SonarQube') {
+                    sh """
+                    ${scannerHome}/bin/sonar-scanner \
+                    -Dsonar.sources=$WORKSPACE/plugin 
+                    """
                 }
-													}
             }
         }
-        stage('Helm Install/Upgrade') {
 
+        stage('Docker image building and pushing to ECR') {
+            steps {
+                container('docker') {
+                    script {
+                        app = docker.build("docker-repo")
+                        docker.withRegistry('https://390844773286.dkr.ecr.eu-west-3.amazonaws.com', 'ecr:eu-west-3:aws') {
+                            app.push("${env.BUILD_NUMBER}")
+                            app.push("latest")
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Deployment to K3s with Helm') {
             steps {
                 container('helm') {
                     script {
@@ -103,6 +104,19 @@ spec:
                         """
                     }
                 } 
+            }
+        }
+
+        stage('Application Verification') {
+            steps {
+                script {
+                    echo 'Waiting 30 seconds for the application ...'
+                    sleep 30
+                    echo 'Verifying application accessibility...'
+                    sh """
+                    curl -LI http://wordpress.aws.alextonkovid.site/ --fail --silent --show-error || exit 1
+                    """
+                }
             }
         }
     }

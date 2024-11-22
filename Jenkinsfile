@@ -86,12 +86,14 @@ spec:
         }
         stage('Deploy') {
             steps {
+													container('docker') {
                 script{
                         docker.withRegistry('https://390844773286.dkr.ecr.eu-west-3.amazonaws.com', 'ecr:eu-west-3:aws') {
                     app.push("${env.BUILD_NUMBER}")
                     app.push("latest")
                     }
                 }
+													}
             }
         }
         stage('Helm Install/Upgrade') {

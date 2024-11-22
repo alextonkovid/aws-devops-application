@@ -120,4 +120,15 @@ spec:
             }
         }
     }
+				post {
+    success {
+        slackSend channel: 'jenkins-notifications',
+                  message: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' succeeded. ${env.BUILD_URL}"
+    }
+    failure {
+        slackSend channel: 'jenkins-notifications',
+                  message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed. ${env.BUILD_URL}"
+    }
+}
+
 }

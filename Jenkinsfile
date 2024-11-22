@@ -77,17 +77,18 @@ spec:
         //     }
 								// }
 
-	       stage('Build') { 
-            steps { 
-                script{
-                 app = docker.build("rss-wordpress")
-                }
-            }
-        }
-        stage('Deploy') {
+	       // stage('Build') { 
+        //     steps { 
+        //         script{
+        //          app = docker.build("rss-wordpress")
+        //         }
+        //     }
+        // }
+        stage('Build & Deploy') {
             steps {
 													container('docker') {
                 script{
+																				app = docker.build("rss-wordpress")
                         docker.withRegistry('https://390844773286.dkr.ecr.eu-west-3.amazonaws.com', 'ecr:eu-west-3:aws') {
                     app.push("${env.BUILD_NUMBER}")
                     app.push("latest")

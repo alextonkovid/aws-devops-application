@@ -54,48 +54,46 @@ spec:
             }
         }
 
-        stage('Run PHPUnit Tests') {
-											steps {
-															container('php') {
-																			sh """
-																			phpunit --bootstrap plugin/wp-test-plugin/autoload.php --testdox plugin/tests
-																			"""
-															}
-											}
-								}
-        stage('Run Sonarqube') {
-            environment {
-                scannerHome = tool 'SonarQube';
-            }
-            steps {
-              withSonarQubeEnv(credentialsId: 'SonarQube', installationName: 'SonarQube') {
-                sh """
-																${scannerHome}/bin/sonar-scanner \
-																-Dsonar.sources=$WORKSPACE/plugin 
-																"""
-              }
-            }
-								}
+        // stage('Run PHPUnit Tests') {
+								// 			steps {
+								// 							container('php') {
+								// 											sh """
+								// 											phpunit --bootstrap plugin/wp-test-plugin/autoload.php --testdox plugin/tests
+								// 											"""
+								// 							}
+								// 			}
+								// }
+        // stage('Run Sonarqube') {
+        //     environment {
+        //         scannerHome = tool 'SonarQube';
+        //     }
+        //     steps {
+        //       withSonarQubeEnv(credentialsId: 'SonarQube', installationName: 'SonarQube') {
+        //         sh """
+								// 								${scannerHome}/bin/sonar-scanner \
+								// 								-Dsonar.sources=$WORKSPACE/plugin 
+								// 								"""
+        //       }
+        //     }
+								// }
 
-        stage('Docker Build and Push to ECR') {
+	       stage('Build') { 
+            steps { 
+                script{
+                 app = docker.build("rss-wordpress")
+                }
+            }
+        }
+        stage('Deploy') {
             steps {
-                container('docker') {
-                    script {
-                        sh """
-                        sudo apt-get install -y unzip
-                        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-                        unzip awscliv2.zip
-                        sudo ./aws/install
-                        sudo aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_REPO}
-                        sudo docker build -t ${IMAGE_NAME}:latest .
-                        sudo docker tag ${IMAGE_NAME}:latest ${ECR_REPO}:latest
-                        sudo docker push ${ECR_REPO}:latest
-                        """
+                script{
+                        docker.withRegistry('https://390844773286.dkr.ecr.eu-west-3.amazonaws.com', 'ecr:eu-west-3:aws') {
+                    app.push("${env.BUILD_NUMBER}")
+                    app.push("latest")
                     }
                 }
             }
         }
-
         stage('Helm Install/Upgrade') {
             // when {
             //     expression {

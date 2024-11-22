@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-wp-helm-dirs
+spec:
+  template:
+    spec:
+      containers:
+      - name: create-dirs
+        image: alpine:latest
+        command: ["/bin/sh", "-c"]
+        args:
+          - mkdir -p /var/wp-helm/wordpress /var/wp-helm/mariadb &&
+            chmod 777 /var/wp-helm/wordpress /var/wp-helm/mariadb &&
+            echo "Directories created and permissions set";
+        volumeMounts:
+        - name: wp-helm-vol
+          mountPath: /var/wp-helm
+      restartPolicy: Never
+      volumes:
+      - name: wp-helm-vol
+        hostPath:
+          path: /var/wp-helm
+          type: DirectoryOrCreate
+  backoffLimit: 4

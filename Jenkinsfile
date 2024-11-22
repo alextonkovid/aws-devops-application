@@ -63,47 +63,38 @@ spec:
 															}
 											}
 								}
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         script {
-        //             def scannerHome = tool 'SonarScanner';
-        //             withSonarQubeEnv() { 
-        //                 sh "${scannerHome}/bin/sonar-scanner"
-        //             }
-        //         }
-        //     }
-        // }
-    
-        // run sonarqube test
         stage('Run Sonarqube') {
             environment {
                 scannerHome = tool 'SonarQube';
             }
             steps {
-              withSonarQubeEnv(credentialsId: 'SonarQube', installationName: 'sonar local') {
-                sh "${scannerHome}/bin/sonar-scanner"
+              withSonarQubeEnv(credentialsId: 'SonarQube', installationName: 'SonarQube') {
+                sh """
+																${scannerHome}/bin/sonar-scanner \
+																-Dsonar.sources=$WORKSPACE/plugin 
+																"""
               }
             }
 								}
 
-        // stage('Docker Build and Push to ECR') {
-        //     steps {
-        //         container('docker') {
-        //             script {
-        //                 sh """
-        //                 sudo apt-get install -y unzip
-        //                 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        //                 unzip awscliv2.zip
-        //                 sudo ./aws/install
-        //                 sudo aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_REPO}
-        //                 sudo docker build -t ${IMAGE_NAME}:latest .
-        //                 sudo docker tag ${IMAGE_NAME}:latest ${ECR_REPO}:latest
-        //                 sudo docker push ${ECR_REPO}:latest
-        //                 """
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Docker Build and Push to ECR') {
+            steps {
+                container('docker') {
+                    script {
+                        sh """
+                        sudo apt-get install -y unzip
+                        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+                        unzip awscliv2.zip
+                        sudo ./aws/install
+                        sudo aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_REPO}
+                        sudo docker build -t ${IMAGE_NAME}:latest .
+                        sudo docker tag ${IMAGE_NAME}:latest ${ECR_REPO}:latest
+                        sudo docker push ${ECR_REPO}:latest
+                        """
+                    }
+                }
+            }
+        }
 
         stage('Helm Install/Upgrade') {
             // when {

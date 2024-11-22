@@ -10,6 +10,7 @@ spec:
   storageClassName: local-path
   hostPath:
     path: /var/wp-helm/mariadb
+  persistentVolumeReclaimPolicy: Delete
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -23,4 +24,4 @@ spec:
   storageClassName: local-path
   hostPath:
     path: /var/wp-helm/wordpress
-
+  persistentVolumeReclaimPolicy: Delete

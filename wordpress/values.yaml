@@ -1,7 +1,7 @@
 namespace: wordpress
 
 wordpress:
-  image: "kofeinua/rsschool-wordpress:latest"
+  image: "390844773286.dkr.ecr.eu-west-3.amazonaws.com/docker-repo:latest"
   replicaCount: 1
   service:
     type: NodePort
